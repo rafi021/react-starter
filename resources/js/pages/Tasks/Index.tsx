@@ -11,11 +11,13 @@ import {
 } from "@/components/ui/table"
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Task } from '@/types'
+import { toast } from 'sonner';
 const Index = ({tasks}: {tasks: Task[]}) => {
 
     const deleteTask =(id:number) => {
         if(confirm('Are you sure?')){
             router.delete(route('tasks.destroy', {id}));
+            toast.success("Task Deleted successfully!");
         }
     }
     return (
