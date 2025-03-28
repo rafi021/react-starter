@@ -14,7 +14,8 @@ class Task extends Model
 
     protected function casts():array{
         return[
-            'is_completed' => 'boolean'
+            'is_completed' => 'boolean',
+            'due_date' => 'date'
         ];
     }
 }

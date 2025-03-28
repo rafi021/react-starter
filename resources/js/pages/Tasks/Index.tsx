@@ -10,15 +10,18 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { Button, buttonVariants } from '@/components/ui/button';
-import { type BreadcrumbItem, type Task } from '@/types';
+import { type BreadcrumbItem, type Task, type PaginatedResponse, } from '@/types';
 import { toast } from 'sonner';
+
+import { TablePagination } from '@/components/table-pagination';
+ import { format } from 'date-fns';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: '/dashboard' },
     { title: 'Tasks', href: '/tasks' },
 ];
 
-const Index = ({tasks}: {tasks: Task[]}) => {
+const Index = ({tasks}: {tasks: PaginatedResponse<Task>}) => {
 
     const deleteTask =(id:number) => {
         if(confirm('Are you sure?')){
@@ -39,17 +42,19 @@ const Index = ({tasks}: {tasks: Task[]}) => {
                          <TableRow>
                              <TableHead>Task</TableHead>
                              <TableHead className="w-[100px]">Status</TableHead>
+                             <TableHead className="w-[100px]">Due Date</TableHead>
                              <TableHead className="w-[150px] text-right">Actions</TableHead>
                          </TableRow>
                      </TableHeader>
                 <TableBody>
 
-                        {tasks.map((task:Task) =>(
+                        {tasks.data.map((task:Task) =>(
                             <TableRow key={task.id}>
                                 <TableCell className="font-medium">{task.name}</TableCell>
                                 <TableCell className={task.is_completed ? 'text-green-600' : 'text-red-700'}>
                                      {task.is_completed ? 'Completed' : 'In Progress'}
                                 </TableCell>
+                                <TableCell>{task.due_date ? format(task.due_date, 'PPP') : ''}</TableCell>
                                 <TableCell className="flex flex-row gap-x-2 text-right">
                                      <Link className={buttonVariants({ variant: 'default' })} href={`/tasks/${task.id}/edit`}>
                                          Edit
@@ -63,6 +68,7 @@ const Index = ({tasks}: {tasks: Task[]}) => {
 
                 </TableBody>
             </Table>
+            <TablePagination resource={tasks}/>
 
         </AppLayout>
     )
