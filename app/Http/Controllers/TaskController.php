@@ -33,7 +33,9 @@ class TaskController extends Controller
     public function store(StoreTaskRequest $request)
     {
         Task::create($request->validated() + ['is_completed' => false]);
-
+        if ($request->hasFile('media')) {
+            $task->addMedia($request->file('media'))->toMediaCollection();
+        }
         return redirect()->route('tasks.index');
 
     }
@@ -51,6 +53,8 @@ class TaskController extends Controller
      */
     public function edit(Task $task)
     {
+        $task->load(['media']);
+        $task->append('mediaFile');
         return Inertia::render('Tasks/Edit', [
             'task' => $task,
         ]);
@@ -62,7 +66,10 @@ class TaskController extends Controller
     public function update(UpdateTaskRequest $request, Task $task)
     {
         $task->update($request->validated());
-
+        if ($request->hasFile('media')) {
+            $task->getFirstMedia()?->delete();
+            $task->addMedia($request->file('media'))->toMediaCollection();
+        }
          return redirect()->route('tasks.index');
     }
 
