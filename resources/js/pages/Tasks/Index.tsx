@@ -10,7 +10,7 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { Button, buttonVariants } from '@/components/ui/button';
-import { BreadcrumbItem, Task } from '@/types';
+import { type BreadcrumbItem, type Task } from '@/types';
 import { toast } from 'sonner';
 
 const breadcrumbs: BreadcrumbItem[] = [
