@@ -10,8 +10,14 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { Button, buttonVariants } from '@/components/ui/button';
-import { Task } from '@/types'
+import { BreadcrumbItem, Task } from '@/types';
 import { toast } from 'sonner';
+
+const breadcrumbs: BreadcrumbItem[] = [
+    { title: 'Dashboard', href: '/dashboard' },
+    { title: 'Tasks', href: '/tasks' },
+];
+
 const Index = ({tasks}: {tasks: Task[]}) => {
 
     const deleteTask =(id:number) => {
@@ -21,8 +27,12 @@ const Index = ({tasks}: {tasks: Task[]}) => {
         }
     }
     return (
-        <AppLayout>
+        <AppLayout breadcrumbs={breadcrumbs}>
             <Head title='Tasks List' />
+            <div className="mt-8">
+                <Link className={buttonVariants({variant: 'outline'})}
+                href='/tasks/create'>Create Task</Link>
+            </div>
             <Table className={'mt-4'}>
                 <TableCaption>A list of your recent invoices.</TableCaption>
                 <TableHeader>
