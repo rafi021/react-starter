@@ -23,6 +23,7 @@ class UpdateTaskCategoryRequest extends FormRequest
     {
         return [
             'name' => ['required'],
+            
         ];
     }
 }
