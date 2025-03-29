@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
@@ -15,11 +16,17 @@ class Task extends Model implements HasMedia
 
     protected $guarded = ['id'];
 
-    protected function casts():array{
-        return[
+    protected function casts(): array
+    {
+        return [
             'is_completed' => 'boolean',
             'due_date' => 'date'
         ];
+    }
+
+    public function taskCategories(): BelongsToMany
+    {
+        return $this->belongsToMany(TaskCategory::class);
     }
 
     protected $appends = [
