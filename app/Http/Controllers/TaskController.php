@@ -6,6 +6,7 @@ use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
 use App\Models\Task;
 use App\Models\TaskCategory;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class TaskController extends Controller
@@ -13,10 +14,18 @@ class TaskController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         return Inertia::render('Tasks/Index', [
-            'tasks' => Task::with('media', 'taskCategories')->paginate(20)
+            'tasks' => Task::with('media', 'taskCategories')
+                ->when($request->has('categories'), function ($query) use ($request) {
+                    $query->whereHas('taskCategories', function ($query) use ($request) {
+                        $query->whereIn('id', $request->query('categories'));
+                    });
+                })
+                ->paginate(20),
+            'categories' => TaskCategory::whereHas('tasks')->withCount('tasks')->get(),
+            'selectedCategories' => $request->query('categories'),
         ]);
     }
 

@@ -13,12 +13,26 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Tasks', href: '/tasks' },
 ];
 
-const Index = ({ tasks }: { tasks: PaginatedResponse<Task> }) => {
+const Index = ({
+    tasks,
+    categories,
+    selectedCategories,
+}: {
+    tasks: PaginatedResponse<Task>;
+    categories: TaskCategory[];
+    selectedCategories: string[] | null;
+}) => {
     const deleteTask = (id: number) => {
         if (confirm('Are you sure?')) {
             router.delete(route('tasks.destroy', { id }));
             toast.success('Task Deleted successfully!');
         }
+    };
+    const selectCategory = (id: string) => {
+        const selected = selectedCategories?.includes(id)
+            ? selectedCategories?.filter((category) => category !== id)
+            : [...(selectedCategories || []), id];
+        router.visit('/tasks', { data: { categories: selected } });
     };
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -27,6 +41,17 @@ const Index = ({ tasks }: { tasks: PaginatedResponse<Task> }) => {
                 <Link className={buttonVariants({ variant: 'outline' })} href="/tasks/create">
                     Create Task
                 </Link>
+            </div>
+            <div className={'mt-4 flex flex-row justify-center gap-x-2'}>
+                {categories.map((category: TaskCategory) => (
+                    <Button
+                        variant={selectedCategories?.includes(category.id.toString()) ? 'default' : 'outline'}
+                        key={category.id}
+                        onClick={() => selectCategory(category.id.toString())}
+                    >
+                        {category.name} ({category.tasks_count})
+                    </Button>
+                ))}
             </div>
             <Table className={'mt-4'}>
                 <TableHeader>
